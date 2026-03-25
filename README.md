@@ -1,73 +1,49 @@
-# React + TypeScript + Vite
+# Task Management Application - Tresata Assessment
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A robust, simplified task management application built as part of the Sr. Front-end Engineer assessment for Tresata India. This project translates the provided Figma design into a fully functional, responsive, and performant React application.
 
-Currently, two official plugins are available:
+**Live Demo:** [Insert Deployment Link Here]
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🚀 Tech Stack
 
-## React Compiler
+* **Framework:** React 18 (Bootstrapped with Vite for fast HMR and optimized builds)
+* **Language:** strict TypeScript
+* **Styling:** Tailwind CSS + shadcn/ui (Radix UI primitives for accessibility)
+* **State Management:** React Context API + `useReducer`
+* **Routing:** React Router DOM (v6)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## ✨ Key Features & Requirements Met
 
-## Expanding the ESLint configuration
+* **Full CRUD Operations:** Create, Read, Update, and Delete tasks efficiently.
+* **Status Management:** Visually distinct completed vs. incomplete tasks.
+* **Data Persistence:** Tasks are seamlessly synchronized with `localStorage` to survive page reloads.
+* **Search Functionality:** Real-time search with a `300ms` debounce to optimize performance.
+* **Brand Integration:** Custom Tailwind configuration utilizing the Tresata brand color (`tresata-color`) for cohesive UI/UX.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🧠 Architectural & Design Decisions
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+As a senior-level implementation, several specific design decisions were made to prioritize scalability, performance, and user experience:
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+1. **URL-Driven State for Filtering & Search:**
+   Instead of storing the active filter and search query in local React state. This makes the application views bookmarkable, shareable, and refresh-safe, which is a modern UX best practice.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+2. **State Management (`useReducer` vs Redux):**
+   While Redux was considered, React's native `useReducer` combined with the Context API was chosen. It provides the same predictable, action-dispatch pattern and unidirectional data flow as Redux without the unnecessary boilerplate and bundle-size bloat for an application of this specific scope. 
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+3. **Debounced Search Input:**
+   A custom `useDebounce` hook was implemented for the search bar. This prevents the application from executing heavy filtering logic or triggering rapid URL updates on every single keystroke, improving input responsiveness.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+4. **Code Splitting & Lazy Loading:**
+   React Router routes are wrapped in React's `lazy` and `Suspense`. The "Add/Edit Task" views are bundled separately and loaded on-demand, optimizing the initial Time-to-Interactive (TTI) metrics.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+5. **Accessibility (a11y) & Forms:**
+   All forms utilize semantic `<form>` tags with `type="submit"` buttons to ensure standard keyboard navigation (e.g., "Enter" to submit) works out of the box. UI components are built on Radix UI primitives ensuring ARIA compliance, proper focus trapping, and screen-reader support.
+
+## 🛠️ Installation & Setup
+
+To run this project locally, ensure you have Node.js (v18+) installed.
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/ksuman-in/Todo-App-Tresata.git
+   cd todo-app-tresata

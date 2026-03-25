@@ -2,7 +2,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useTasks } from "@/hooks/useTask";
 import { Button } from "@base-ui/react/button";
-import { useEffect, useState } from "react";
+import { useEffect, useState, ElementType } from "react";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
 import Select from "react-select";
@@ -10,7 +10,15 @@ import { TaskFormData } from "@/types/types";
 import { Circle } from "lucide-react";
 import { type } from "@/utils/constant";
 
-const options = [
+interface TaskOption {
+  id: string;
+  value: string;
+  label: string;
+  icon: ElementType;
+  color: string;
+}
+
+const options: TaskOption[] = [
   {
     id: type.IN_PROGRESS,
     value: type.IN_PROGRESS,
@@ -34,7 +42,7 @@ const options = [
   },
 ];
 
-const formatOptionLabel = ({ label, icon: Icon, color }) => {
+const formatOptionLabel = ({ label, icon: Icon, color }: TaskOption) => {
   return (
     <div className="flex items-center gap-2">
       <Icon className={`size-3 text-muted-foreground ${color}`} />
@@ -44,13 +52,7 @@ const formatOptionLabel = ({ label, icon: Icon, color }) => {
 };
 
 export default function EditTaskForm() {
-  const [actionType, setActionType] = useState<{
-    id: string;
-    value: string;
-    label: string;
-    icon?: React.ElementType;
-    color?: string;
-  }>(options?.at(0));
+  const [actionType, setActionType] = useState<string | null>("");
   const { dispatch, tasks } = useTasks();
   const {
     register,
@@ -62,16 +64,29 @@ export default function EditTaskForm() {
   const location = useLocation();
 
   useEffect(() => {
-    const editTask = tasks.find((task) => task.id === location?.state?.id);
+    const targetId = location?.state?.id;
+    if (!targetId) {
+      navigate("/");
+      return;
+    }
+
+    const editTask = tasks.find((task) => task.id === targetId);
+
+    if (!editTask) {
+      navigate("/");
+      return;
+    }
+
     if (editTask.actionType) {
       const selectedValue = options.find(
         (task) => task.value === editTask.actionType,
       );
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      setActionType(selectedValue);
+      if (selectedValue) setActionType(selectedValue.value);
     }
+
     reset({ title: editTask.title, description: editTask.description });
-  }, [location?.state?.id, reset, tasks]);
+  }, [location?.state?.id, reset, tasks, navigate]);
 
   const handleAdd = (data: TaskFormData) => {
     dispatch({
@@ -80,12 +95,13 @@ export default function EditTaskForm() {
         id: location.state.id,
         title: data.title,
         description: data.description,
-        actionType: actionType.value,
+        actionType: actionType || type.IN_PROGRESS,
       },
     });
-    reset({ title: "", description: "" });
+    reset();
     navigate("/");
   };
+
   return (
     <form onSubmit={handleSubmit(handleAdd)}>
       <div className="flex gap-3 flex-col">
@@ -113,8 +129,12 @@ export default function EditTaskForm() {
         )}
         <Select
           className="focus-visible:ring-tresata-color transition-all rounded-sm"
-          value={actionType}
-          onChange={setActionType}
+          value={options.find((opt) => opt.value === actionType) || null}
+          onChange={(newValue) => {
+            if (newValue) {
+              setActionType(newValue.value);
+            }
+          }}
           options={options}
           formatOptionLabel={formatOptionLabel}
         />
