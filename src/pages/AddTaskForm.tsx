@@ -1,5 +1,6 @@
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { useTasks } from "@/hooks/useTask";
 import { TaskFormData } from "@/types/types";
 import { Button } from "@base-ui/react/button";
@@ -7,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
 export default function AddTaskForm() {
+  useDocumentTitle("Add Task");
   const { dispatch } = useTasks();
   const {
     register,

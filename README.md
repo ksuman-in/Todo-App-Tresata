@@ -1,49 +1,57 @@
 # Task Management Application - Tresata Assessment
 
-A robust, simplified task management application built as part of the Sr. Front-end Engineer assessment for Tresata India. This project translates the provided Figma design into a fully functional, responsive, and performant React application.
+A robust, performant, and scalable task management application built as part of the Senior Front-end Engineer assessment for Tresata. This application translates complex state management requirements into a seamless, accessible, and responsive user experience.
 
-**Live Demo:** [Insert Deployment Link Here]
+🌍 **Live Demo:** [https://todo-app-tresata.vercel.app/](https://todo-app-tresata.vercel.app/)  
+💻 **Repository:** [https://github.com/ksuman-in/Todo-App-Tresata](https://github.com/ksuman-in/Todo-App-Tresata)
+
+---
 
 ## 🚀 Tech Stack
 
-* **Framework:** React 18 (Bootstrapped with Vite for fast HMR and optimized builds)
-* **Language:** strict TypeScript
-* **Styling:** Tailwind CSS + shadcn/ui (Radix UI primitives for accessibility)
-* **State Management:** React Context API + `useReducer`
-* **Routing:** React Router DOM (v6)
+- **Core:** React 18, strict TypeScript, Vite
+- **Routing:** React Router DOM (v6)
+- **State Management:** React Context API + `useReducer`
+- **Styling & UI:** Tailwind CSS, shadcn/ui, Radix UI Primitives, Lucide Icons
+- **Forms & Validation:** `react-hook-form`, `react-select`
+- **Deployment:** Vercel
 
-## ✨ Key Features & Requirements Met
+---
 
-* **Full CRUD Operations:** Create, Read, Update, and Delete tasks efficiently.
-* **Status Management:** Visually distinct completed vs. incomplete tasks.
-* **Data Persistence:** Tasks are seamlessly synchronized with `localStorage` to survive page reloads.
-* **Search Functionality:** Real-time search with a `300ms` debounce to optimize performance.
-* **Brand Integration:** Custom Tailwind configuration utilizing the Tresata brand color (`tresata-color`) for cohesive UI/UX.
+## ✨ Key Features
 
-## 🧠 Architectural & Design Decisions
+- **Complete Task Lifecycle:** Create, read, update, and delete tasks with instant UI feedback.
+- **Persistent Storage:** Seamless synchronization with `localStorage` ensures data survives page reloads.
+- **Debounced Search:** Custom `useDebounce` implementation prevents UI blocking and rapid re-renders during text input.
+- **Dynamic Client-Side Filtering:** The search functionality is handled instantly in the UI without risking data loss or unnecessary API-like calls.
+- **Accessible UI:** Custom dropdowns and form inputs built on top of Radix UI to ensure full ARIA compliance and keyboard navigation.
+- **Responsive Design:** Mobile-first layout tailored to the Tresata brand design system (`tresata-color`).
 
-As a senior-level implementation, several specific design decisions were made to prioritize scalability, performance, and user experience:
+---
 
-1. **URL-Driven State for Filtering & Search:**
-   Instead of storing the active filter and search query in local React state. This makes the application views bookmarkable, shareable, and refresh-safe, which is a modern UX best practice.
+## 🧠 Architectural Decisions
 
-2. **State Management (`useReducer` vs Redux):**
-   While Redux was considered, React's native `useReducer` combined with the Context API was chosen. It provides the same predictable, action-dispatch pattern and unidirectional data flow as Redux without the unnecessary boilerplate and bundle-size bloat for an application of this specific scope. 
+To demonstrate senior-level engineering practices, several specific architectural patterns were implemented:
 
-3. **Debounced Search Input:**
-   A custom `useDebounce` hook was implemented for the search bar. This prevents the application from executing heavy filtering logic or triggering rapid URL updates on every single keystroke, improving input responsiveness.
+### 1. Derived State vs. State Mutation
+Instead of modifying the global task array during search operations (which risks permanently overwriting local storage data), search results are handled purely as **derived state** at the component level. The `useReducer` strictly manages the source of truth, while the UI dynamically filters the visible tasks based on the active search query.
 
-4. **Code Splitting & Lazy Loading:**
-   React Router routes are wrapped in React's `lazy` and `Suspense`. The "Add/Edit Task" views are bundled separately and loaded on-demand, optimizing the initial Time-to-Interactive (TTI) metrics.
+### 2. Immutable Reducer with Discriminated Unions
+The global state is managed by a heavily typed `taskReducer`. Action payloads use TypeScript Discriminated Unions to guarantee type safety across transitions, ensuring that properties are never accessed before their specific action types are verified. All state updates are strictly immutable.
 
-5. **Accessibility (a11y) & Forms:**
-   All forms utilize semantic `<form>` tags with `type="submit"` buttons to ensure standard keyboard navigation (e.g., "Enter" to submit) works out of the box. UI components are built on Radix UI primitives ensuring ARIA compliance, proper focus trapping, and screen-reader support.
+### 3. Code Splitting & TTI Optimization
+To ensure a rapid Time-to-Interactive (TTI), React Router routes are wrapped in `React.lazy` and `Suspense`. The application is split into highly optimized chunks at build time, ensuring users only download the specific JavaScript necessary for the active route (e.g., the Add/Edit form logic is decoupled from the main list view).
 
-## 🛠️ Installation & Setup
+### 4. Crash Resilience & "Bouncer" Logic
+Dynamic routes (like the Edit Task view) implement proactive mounting checks. If a user performs a hard refresh on an edit route causing the location state to clear, the component safely intercepts the `undefined` state and redirects to the home view, preventing runtime crashes.
+
+---
+
+## 🛠️ Local Development Setup
 
 To run this project locally, ensure you have Node.js (v18+) installed.
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/ksuman-in/Todo-App-Tresata.git
-   cd todo-app-tresata
+**1. Clone the repository:**
+```bash
+git clone [https://github.com/ksuman-in/Todo-App-Tresata.git](https://github.com/ksuman-in/Todo-App-Tresata.git)
+cd Todo-App-Tresata

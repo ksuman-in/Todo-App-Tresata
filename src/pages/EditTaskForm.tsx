@@ -9,6 +9,7 @@ import Select from "react-select";
 import { TaskFormData } from "@/types/types";
 import { Circle } from "lucide-react";
 import { type } from "@/utils/constant";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
 interface TaskOption {
   id: string;
@@ -52,6 +53,7 @@ const formatOptionLabel = ({ label, icon: Icon, color }: TaskOption) => {
 };
 
 export default function EditTaskForm() {
+  useDocumentTitle("Edit Task");
   const [actionType, setActionType] = useState<string | null>("");
   const { dispatch, tasks } = useTasks();
   const {
