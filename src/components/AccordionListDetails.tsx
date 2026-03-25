@@ -41,7 +41,8 @@ export function AccordionListDetails({
       </AccordionTrigger>
       {listDetails?.length ? (
         listDetails?.map((item) => {
-          const { title, description, createdAt, id, actionType } = item;
+          const { title, description, createdAt, id, actionType, completed } =
+            item;
           const titleFirst = title?.charAt(0)?.toUpperCase();
           const date = formatCustomDate(createdAt);
           return (
@@ -72,9 +73,11 @@ export function AccordionListDetails({
                 <div className="flex justify-between items-center">
                   <div className="text-black italic text-xs">{date}</div>
                   <div className="opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                    <Button onClick={() => handleEdit(id)}>
-                      <Pencil className="text-tresata-color" />
-                    </Button>
+                    {!completed && (
+                      <Button onClick={() => handleEdit(id)}>
+                        <Pencil className="text-tresata-color" />
+                      </Button>
+                    )}
                     <Button onClick={() => handleDelete(id)}>
                       <Trash2 className="text-red-500" />
                     </Button>

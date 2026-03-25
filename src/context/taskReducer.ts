@@ -1,4 +1,5 @@
 import { Task, TaskAction } from "@/types/types";
+import { type } from "@/utils/constant";
 
 export const taskReducer = (state: Task[], action: TaskAction): Task[] => {
   switch (action.type) {
@@ -18,11 +19,13 @@ export const taskReducer = (state: Task[], action: TaskAction): Task[] => {
     case "EDIT_TASK": {
       return state.map((task) => {
         if (task.id === action.payload.id) {
+          const completed = action.payload.actionType === type.COMPLETED;
           return {
             ...task,
             title: action.payload.title,
             description: action.payload.description,
             actionType: action.payload.actionType,
+            completed: completed,
           };
         }
         return task;
